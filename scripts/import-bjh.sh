@@ -4,26 +4,42 @@ set -euo pipefail
 if [[ $# -lt 2 ]]; then
   echo "Usage: $0 <problem_id> <user_id> [source_dir] [platform]"
   echo "Example 1: $0 2562 ppoddo \"./백준/Bronze/2562.최댓값\" boj"
-  echo "Example 2: $0 2562 ppoddo"
+  echo "Example 2: $0 12906 ppoddo ./프로그래머스/1/12906.같은_숫자는_싫어 programmers"
   exit 1
 fi
 
 problem_id="$1"
 user_id="$2"
 source_dir="${3:-}"
-platform="${4:-boj}"
+platform_input="${4:-boj}"
+
+case "$platform_input" in
+  boj|baekjoon)
+    platform="boj"
+    raw_root="백준"
+    ;;
+  programmers|pgs)
+    platform="programmers"
+    raw_root="프로그래머스"
+    ;;
+  *)
+    echo "Unsupported platform: $platform_input"
+    echo "Use one of: boj, baekjoon, programmers, pgs"
+    exit 1
+    ;;
+esac
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd "$script_dir/.." && pwd)"
 
 if [[ -z "$source_dir" ]]; then
   shopt -s nullglob
-  auto_candidates=("$repo_root/백준"/*/"$problem_id".*)
+  auto_candidates=("$repo_root/$raw_root"/*/"$problem_id".* "$repo_root/$raw_root"/"$problem_id".*)
   shopt -u nullglob
 
   if [[ ${#auto_candidates[@]} -eq 0 ]]; then
     echo "Source directory not provided and auto-detect failed."
-    echo "Expected pattern: $repo_root/백준/*/$problem_id.*"
+    echo "Expected pattern: $repo_root/$raw_root/*/$problem_id.*"
     exit 1
   fi
 
