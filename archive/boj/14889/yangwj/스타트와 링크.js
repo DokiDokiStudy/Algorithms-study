@@ -7,6 +7,7 @@ const chart = input.slice(1).map((line) => line.split(" ").map(Number));
 
 const result = [];
 
+// 조합 함수: arr에서 arrCount개를 뽑는 모든 경우
 const combi = (arr, arrCount) => {
   const result = [];
 
@@ -26,15 +27,19 @@ const combi = (arr, arrCount) => {
   return result;
 };
 
+// 참여한 사람
 const all = Array.from({ length: N }, (_, i) => i);
+// 참여한 사람의 조합 (스타트 팀)
 const combination = combi(all, N / 2);
 
 combination.forEach((startTeam) => {
+  // 전체 중 스타트팀 아닌애들 (링크 팀)
   const linkTeam = all.filter((x) => !startTeam.includes(x));
 
   let startScore = 0;
   let linkScore = 0;
 
+  //스타트팀 능력치
   for (let i = 0; i < startTeam.length; i++) {
     for (let j = i + 1; j < startTeam.length; j++) {
       startScore += chart[startTeam[i]][startTeam[j]];
@@ -42,6 +47,7 @@ combination.forEach((startTeam) => {
     }
   }
 
+  //링크팀 능력치
   for (let i = 0; i < linkTeam.length; i++) {
     for (let j = i + 1; j < linkTeam.length; j++) {
       linkScore += chart[linkTeam[i]][linkTeam[j]];
@@ -49,6 +55,7 @@ combination.forEach((startTeam) => {
     }
   }
 
+  //두팀의 차 절대값
   result.push(Math.abs(startScore - linkScore));
 });
 
