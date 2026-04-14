@@ -15,8 +15,8 @@ for (let i = 0; i < row; i++) {
       }
       board[i][j] = true;
       if (j + 1 < column) board[i][j + 1] = true;
-      if (j - 1 > column) board[i][j - 1] = true;
-      if (i - 1 > row) board[i - 1][j] = true;
+      if (j - 1 >= 0) board[i][j - 1] = true;
+      if (i - 1 >= 0) board[i - 1][j] = true;
       if (i + 1 < row) board[i + 1][j] = true;
     }
   }
