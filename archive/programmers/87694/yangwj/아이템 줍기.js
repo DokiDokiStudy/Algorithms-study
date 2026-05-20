@@ -1,5 +1,5 @@
 function solution(rectangle, characterX, characterY, itemX, itemY) {
-  const maxMapSize = 102;
+  const maxMapSize = 101;
 
   const board = Array.from({ length: maxMapSize }, () =>
     Array(maxMapSize).fill(0),
