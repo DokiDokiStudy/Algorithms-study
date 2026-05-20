@@ -1,6 +1,6 @@
-# [level 3] 아이템 줍기 - 87694 
+# [level 3] 아이템 줍기 - 87694
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/87694) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/87694)
 
 ### 성능 요약
 
@@ -156,6 +156,5 @@
 <p>입출력 예 #4, #5</p>
 
 <p>설명 생략</p>
-
 
 > 출처: 프로그래머스 코딩 테스트 연습, https://school.programmers.co.kr/learn/challenges
