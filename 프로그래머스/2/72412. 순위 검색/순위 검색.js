@@ -1,60 +1,72 @@
+class Node {
+    constructor(depth, value) {
+        this.depth = depth
+        this.value = value
+        this.count = 1
+        this.children = []
+    }
+}
+
+class Trie {
+    constructor() {
+        this.root = new Node(0, null)
+    }
+
+    insert(info) {
+        let cur = this.root
+        for (let i = 0; i < info.length; i++) {
+            let index = cur.children.findIndex((el) => el.value === info[i])
+            if (index !== -1) {
+                cur.children[index].count += 1
+            } else {
+                cur.children.push(new Node(cur.depth + 1, info[i]))
+                index = cur.children.length - 1
+            }
+            cur = cur.children[index]
+        }
+    }
+
+    search(query) {
+        let count = 0
+        const list = [this.root]
+        while (list.length !== 0) {
+            const cur = list.shift()
+            if (cur.count === 0) {
+                continue
+            }
+            if (cur.depth < query.length - 1) {
+                if (query[cur.depth] === '-') {
+                    list.unshift(...cur.children)
+                } else {
+                    const child = cur.children.find(el => el.value === query[cur.depth])
+                    if (child) {
+                        list.unshift(child)
+                    }
+                }
+            } else {
+                for (let i = 0; i < cur.children.length; i++) {
+                    if (cur.children[i].value * 1 >= query[4] * 1) {
+                        count += cur.children[i].count
+                    }
+                }
+            }
+        }
+        return count
+    }
+}
+
 function solution(info, query) {
-  const map = new Map();
+    const trie = new Trie()
+    info.map((cur) => {
+        trie.insert(cur.split(" "))
+    })
 
-  for (const row of info) {
-    const parts = row.split(" ");
-    const score = Number(parts.pop());
+    return query.reduce((acc, cur) => {
+        acc.push(trie.search(querySplit(cur)))
+        return acc
+    }, [])
+}
 
-    makeMap(parts, score, 0, []);
-  }
-
-  for (const scores of map.values()) {
-    scores.sort((a, b) => a - b);
-  }
-
-  const answer = [];
-
-  for (const q of query) {
-    const parts = q.replaceAll(" and ", " ").split(" ");
-    const score = Number(parts.pop());
-    const key = parts.join("");
-
-    const scores = map.get(key) || [];
-    const index = binarySearch(scores, score);
-
-    answer.push(scores.length - index);
-  }
-
-  return answer;
-
-  function makeMap(parts, score, idx, key) {
-    if (idx === 4) {
-      const finalKey = key.join("");
-      if (!map.has(finalKey)) map.set(finalKey, []);
-      map.get(finalKey).push(score);
-      return;
-    }
-
-    makeMap(parts, score, idx + 1, [...key, parts[idx]]);
-    makeMap(parts, score, idx + 1, [...key, "-"]);
-  }
-
-  function binarySearch(arr, target) {
-    let left = 0;
-    let right = arr.length - 1;
-    let answer = arr.length;
-
-    while (left <= right) {
-      const mid = Math.floor((left + right) / 2);
-
-      if (arr[mid] >= target) {
-        answer = mid;
-        right = mid - 1;
-      } else {
-        left = mid + 1;
-      }
-    }
-
-    return answer;
-  }
+function querySplit (query) {
+    return query.split(" ").filter((item)=> item !== "and");
 }
