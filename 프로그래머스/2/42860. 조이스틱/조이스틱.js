@@ -1,29 +1,39 @@
 function solution(name) {
-  let upDown = 0;
-  const nameLength = name.length;
+  const alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const len = name.length;
 
-  for (let i = 0; i < nameLength; i++) {
-    upDown += Math.min(name.charCodeAt(i) - 65, 91 - name.charCodeAt(i));
+  // 1. 상하 이동
+  let upDown = 0;
+  for (let i = 0; i < len; i++) {
+    const pos = alpha.indexOf(name[i]);
+    upDown += Math.min(pos, 26 - pos);
   }
 
-  let move = nameLength - 1;
-
-  for (let i = 0; i < nameLength; i++) {
-    // i 다음에 A가 연속으로 몇 칸인지 찾기
-    let next = i + 1;
-    while (next < nameLength && name[next] === "A") {
-      next++;
+  // 2. A 연속 구간 수집
+  const aGroups = [];
+  let i = 0;
+  while (i < len) {
+    if (name[i] === 'A') {
+      const start = i;
+      while (i < len && name[i] === 'A') i++;
+      aGroups.push({ start, end: i });
+    } else {
+      i++;
     }
+  }
 
-    // 방법1: 오른쪽으로 i까지 갔다가, 되돌아와서 왼쪽으로
-    // i까지 갔다 돌아오기 = i * 2, 나머지 왼쪽 = nameLength - next
-    const a = i * 2 + (nameLength - next);
+  // 3. 좌우 이동 최솟값
+  let move = len - 1;
+  for (const { start, end } of aGroups) {
+    const right = start - 1;
+    const left = len - end;
 
-    // 방법2: 왼쪽으로 먼저 갔다가, 되돌아와서 오른쪽으로
-    // 왼쪽 갔다 돌아오기 = (nameLength - next) * 2, 나머지 오른쪽 = i
-    const b = (nameLength - next) * 2 + i;
-
-    move = Math.min(move, a, b);
+    if (right < 0) {
+      // 첫 글자부터 A인 경우: 왼쪽으로만 가면 됨
+      move = Math.min(move, left);
+    } else {
+      move = Math.min(move, right * 2 + left, left * 2 + right);
+    }
   }
 
   return upDown + move;
